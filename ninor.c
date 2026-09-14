@@ -16,8 +16,13 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <stdbool.h>
 #include <stdio.h>
+
+/* This macro sets the type, which restricts the maximum length of inputs to a
+ * NiNOR gate. */
 #define TYPE unsigned long long
 
+/* Performs N-input NOR (NiNOR) on n(len) bool inputs (n_input) and returns
+ * result */
 bool ninor(bool n_inputs[], TYPE len) {
   for (TYPE i = 0; i < len; i++) {
     if (n_inputs[i]) {
@@ -27,11 +32,12 @@ bool ninor(bool n_inputs[], TYPE len) {
   return 1;
 }
 
-void printbools(bool n_inputs[], TYPE len) {
+/* Writes bools to stream cast to unsigned char */
+void putbools(bool n_inputs[], TYPE len, FILE *stream) {
   for (TYPE i = 0; i < len; i++) {
-    putchar(n_inputs[i] + '0');
+    putc(n_inputs[i] + '0', stream);
   }
-  putchar('\n');
+  putc('\n', stream);
 }
 
 int main(void) {
@@ -44,6 +50,6 @@ int main(void) {
   bool mylist[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   TYPE len = sizeof mylist / sizeof(bool);
-  printbools(mylist, len);
+  putbools(mylist, len, stdout);
   return ninor(mylist, len);
 }
