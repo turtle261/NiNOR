@@ -41,15 +41,12 @@ void putbools(bool n_inputs[], TYPE len, FILE *stream) {
 }
 
 int main(void) {
-  /* bool mylist[] = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-*/
   bool mylist[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   TYPE len = sizeof mylist / sizeof(bool);
   putbools(mylist, len, stdout);
-  return ninor(mylist, len);
+  bool returned = ninor(mylist, len);
+  printf("returned=%d\n", returned);
+
+  return 0;
 }

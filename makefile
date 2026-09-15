@@ -9,3 +9,6 @@ clean:
 
 clang:
 	clang $(CFLAGS) ninor.c -o ninor
+
+tcc:
+	tcc $(CFLAGS) ninor.c -o ninor
