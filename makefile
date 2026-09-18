@@ -12,3 +12,6 @@ clang:
 
 tcc:
 	tcc $(CFLAGS) ninor.c -o ninor
+
+run: clean tcc
+	./ninor

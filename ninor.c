@@ -14,8 +14,25 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/*
+1 , 2   3 , 4   5   6   7   8   9   10
+T	T	F	F	T	T	F	F	F	T
+T	F	F	T	F	T	T	F	T	F
+F	T	T	F	F	T	T	F	T	F
+F	F	T	T	F	F	T	T	F	T
+1,2: Name(function)
+3,4: NOT(negation)
+5: AND(conjunction)
+6: OR(disjunction)
+7: NAND(non-conjunction)
+8: NOR(non-disjunction)
+9: XOR(non-equivalence)
+10: XNOR(equivalence)
+*/
+
 #include <stdbool.h>
 #include <stdio.h>
+#define GATECOUNT 3
 
 /* This macro sets the type, which restricts the maximum length of inputs to a
  * NiNOR gate. */
@@ -40,6 +57,27 @@ void putbools(bool n_inputs[], TYPE len, FILE *stream) {
   putc('\n', stream);
 }
 
+/*
+        program, ideally could be bits, serialized into inputs for the graph, as
+   initial state. graph ideally should have only nodes that are gates, and
+   should have a tick.
+*/
+
+struct row {
+  TYPE from;
+  TYPE to;
+};
+typedef struct row row;
+
+void putgraph(row graph[], FILE *stream) {
+  for (TYPE i = 0; i < GATECOUNT; i++) {
+    putc(graph[i].from + '0', stream);
+    fprintf(stream, " -> ");
+    putc(graph[i].to + '0', stream);
+    putc('\n', stream);
+  }
+}
+
 int main(void) {
   bool mylist[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -47,6 +85,15 @@ int main(void) {
   putbools(mylist, len, stdout);
   bool returned = ninor(mylist, len);
   printf("returned=%d\n", returned);
+
+  row graph[GATECOUNT];
+  graph[0].from = 0;
+  graph[0].to = 1;
+  graph[1].from = 1;
+  graph[1].to = 2;
+  graph[2].from = 3;
+  graph[2].to = 0;
+  putgraph(graph, stdout);
 
   return 0;
 }
