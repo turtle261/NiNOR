@@ -39,12 +39,12 @@ TYPE node_number_of_connections(node *root) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
     } else {
       value[vallen] = root->next[i];
       ++vallen;
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
       max += node_number_of_connections(root->next[i]);
@@ -74,13 +74,13 @@ TYPE node_number_of_connections_incl_loop(node *root) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       ++max;
     } else {
       value[vallen] = root->next[i];
       ++vallen;
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
       max += node_number_of_connections_incl_loop(root->next[i]);
@@ -108,12 +108,12 @@ void print_nodes_by_value(node *root) {
       o = 1;
     } else if (is_x_in_arr_of_x(root->next[i]->value, value)) {
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
     } else {
       value[vallen] = root->next[i]->value;
       ++vallen;
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
       print_nodes_by_value(root->next[i]);
@@ -136,12 +136,12 @@ void print_nodes_by_pointer(node *root) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
     } else {
       value[vallen] = root->next[i];
       ++vallen;
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", root, root->next[i]);
+      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
       print_nodes_by_pointer(root->next[i]);
