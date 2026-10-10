@@ -32,7 +32,7 @@ F	F	T	T	F	F	T	T	F	T
 
 #include <stdbool.h>
 #include <stdio.h>
-#define GATECOUNT 3
+#define GATECOUNT 4
 
 /* This macro sets the type, which restricts the maximum length of inputs to a
  * NiNOR gate. */
@@ -66,6 +66,7 @@ void putbools(bool n_inputs[], TYPE len, FILE *stream) {
 struct row {
   TYPE from;
   TYPE to;
+  bool state;
 };
 typedef struct row row;
 
@@ -78,6 +79,11 @@ void putgraph(row graph[], FILE *stream) {
   }
 }
 
+row process(row graph[]) {
+
+  for (TYPE i = 0; i < GATECOUNT; i++) {
+  }
+}
 int main(void) {
   bool mylist[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -88,11 +94,16 @@ int main(void) {
 
   row graph[GATECOUNT];
   graph[0].from = 0;
+  graph[0].state = 1;
+  graph[1].state = 0;
+  graph[2].state = 0;
+  graph[3].state = 0;
   graph[0].to = 1;
   graph[1].from = 1;
   graph[1].to = 2;
   graph[2].from = 3;
   graph[2].to = 0;
+
   putgraph(graph, stdout);
 
   return 0;
