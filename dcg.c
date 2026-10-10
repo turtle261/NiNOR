@@ -1,20 +1,6 @@
+#include "dcg.h"
 #include <stdio.h>
 #include <stdlib.h>
-typedef unsigned long long TYPE;
-
-#define MAX_VALUES 255
-#define VALUE_TYPE unsigned char
-
-/* Notes:
- * 1. A root node is a node with no incoming connection
- * 2. Use array of node--and find/identify roots.
- *
- *
- */
-typedef struct node {
-  VALUE_TYPE value;   /* The nodes value */
-  struct node **next; /* Array of pointers to the nodes this one points to*/
-} node;
 
 unsigned char is_x_in_arr_of_x(VALUE_TYPE in, VALUE_TYPE *check) {
   VALUE_TYPE iter = 0;
@@ -37,29 +23,6 @@ unsigned char is_p_in_arr_of_p(void *in, void **check) {
   }
   return 0;
 }
-
-static int is_first = 1;
-
-// TYPE node_number_of_connections(node *root) {
-//   TYPE max = 0;
-//   VALUE_TYPE *value = calloc(MAX_VALUES, sizeof(*value));
-//   VALUE_TYPE vallen = 1;
-//   value[0] = root->value;
-//   for (unsigned i = 0, o = 0; !o; i++) {
-//     if (root->next[i] == NULL) {
-//       o = 1;
-//     } else if (is_x_in_arr_of_x(root->next[i]->value, value)) {
-//       continue;
-//     } else {
-//       value[vallen] = root->next[i]->value;
-//       ++vallen;
-//       max += node_number_of_connections(root->next[i]);
-//       ++max;
-//     }
-//   }
-//   free(value);
-//   return max;
-// }
 
 /* Gets the number of connections derived from a given root node by pointer(thus
  * it DOES NOT assume unique values for each node in the graph). I.e. number of
@@ -93,7 +56,6 @@ TYPE node_number_of_connections(node *root) {
     free(value);
     vallen = 1;
   }
-
   return max;
 }
 
@@ -132,33 +94,6 @@ TYPE node_number_of_connections_incl_loop(node *root) {
   }
   return max;
 }
-
-// TYPE node_number_of_connections_incl_loop(node *root) {
-//   int foundloop = 0; /* So we can print then set this to 1 to never print
-//   again,
-//                         so the loop is shown but not followed indefinitely.
-//                         */
-//   TYPE max = 0;
-//   VALUE_TYPE *value = calloc(MAX_VALUES, sizeof(*value));
-//   VALUE_TYPE vallen = 1;
-//   value[0] = root->value;
-//   for (unsigned i = 0, o = 0; !o; i++) {
-//     if (root->next[i] == NULL) {
-//       o = 1;
-//     } else if (is_x_in_arr_of_x(root->next[i]->value, value) && !foundloop) {
-//       ++max;
-//       foundloop = 1; /* Don't keep following the loop forever */
-//       continue;
-//     } else {
-//       value[vallen] = root->next[i]->value;
-//       ++vallen;
-//       max += node_number_of_connections_incl_loop(root->next[i]);
-//       ++max;
-//     }
-//   }
-//   free(value);
-//   return max;
-// }
 
 /* Prints the graph following a root node, including identifying loops/cycles.
  * It does this by value, and thus assumes nodes in the graph are unique by
