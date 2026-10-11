@@ -70,20 +70,5 @@ int main(int argc, char *argv[]) {
   free(four);
   free(five);
   free(six);
-  printf("\n\n\n\n\n\n\n\n\n\n");
-  node *new = load_graph("graph.txt");
-  print_nodes_by_pointer(new);
-  printf("\n\n\n\n\n\n\n\n\n\n");
-  node *new2 = load_graph("graph2.txt");
-  print_nodes_by_pointer(new2);
-  printf("For graph2.txt, number of connections INCL loops/cycles: %llu, "
-         "number of connections without cycles/loops: %llu\n",
-         node_number_of_connections_incl_loop(new2),
-         node_number_of_connections(new2));
-
-  free(new->next);
-  free(new2->next);
-  free(new);
-  free(new2);
   return 0;
 }
