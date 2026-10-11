@@ -1,12 +1,12 @@
-node a
-node b
-node c
-node d
-node f
-node g
-node h
-node i
-node j
+node a 1
+node b 0
+node c 1
+node d 1
+node f 1
+node g 0
+node h 0
+node i 1
+node j 0
 
 a->b
 b->c

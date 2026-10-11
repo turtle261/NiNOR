@@ -204,7 +204,11 @@ void print_nodes_definition_by_pointer(node *root, FILE *output) {
   }
   if (is_first) {
     for (VALUE_TYPE i = 0; i < vallen; i++) {
-      fprintf(output, "node %c\n", val[i]->value);
+      fprintf(output, "node %c %d", val[i]->value, val[i]->out);
+#ifdef DCG_ALWAYS_PRINT_PENDING_VALUE
+      fprintf(output, " (pending: %d)", val[i]->pending);
+#endif
+      putc('\n', output);
     }
     free(val);
     vallen = 1;
@@ -213,7 +217,8 @@ void print_nodes_definition_by_pointer(node *root, FILE *output) {
 
 /* Prints the node definitions of a graph following a root node. It does this by
  * value, and thus assumes nodes in the graph are unique by value. It will write
- * to the output (FILE *) parameter.*/
+ * to the output (FILE *) parameter. Will not (yet?) work with its out
+ * parameter*/
 void print_nodes_definition_by_value(node *root, FILE *output) {
   static VALUE_TYPE *value;
   (is_first) ? value = calloc(MAX_VALUES, sizeof(*value)) : 0;
@@ -277,14 +282,24 @@ node *load_graph(char *filepath) {
           ++has_root;
         } else*/
     if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
-        line[4] == ' ' && line[6] == '\n') { /* node definition */
+        line[4] == ' ' &&
+        (line[6] == '\n' || line[6] == ' ')) { /* node declaration*/
       values[valnum] = line[5];
       valnum++;
       nodes[nodeidx].next = calloc(MAX_VALUES, sizeof(*nodes->next));
       nodes[nodeidx].value = line[5];
+      for (unsigned char i = 1; i < 3; ++i) {
+        if (line[5 + i] == '\0') {
+          i = 3;
+        } else if ((5 + i) == 7 && line[6] == ' ') {
+          nodes[nodeidx].out = line[7];
+          nodes[nodeidx].pending = 0; /* Initialize to zero */
+        }
+      }
       ++nodeidx;
     } else if (nodeidx && is_x_in_arr_of_x(line[0], values) && line[1] == '-' &&
                line[2] == '>' && is_x_in_arr_of_x(line[3], values)) {
+      /* Direction definition */
       if (nodeidx) {
         unsigned x = 0, y = 0;
         for (unsigned i = 0; i < nodeidx; i++) {
