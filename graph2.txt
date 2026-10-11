@@ -1,0 +1,6 @@
+node a
+node b
+a->a
+a->b
+b->a
+b->b

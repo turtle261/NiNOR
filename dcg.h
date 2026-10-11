@@ -2,6 +2,7 @@ typedef unsigned long long TYPE;
 
 #define MAX_VALUES 255
 #define VALUE_TYPE unsigned char
+#define MAX_GRAPH_LINE_LEN 16
 
 /* Notes:
  * 1. A root node is a node with no incoming connection
@@ -44,3 +45,10 @@ unsigned char is_p_in_arr_of_p(void *in, void **check);
 /* Check if an unsigned char is in an unsigned string (array of unsigned chars,
  * terminated by '\0' */
 unsigned char is_x_in_arr_of_x(VALUE_TYPE in, VALUE_TYPE *check);
+
+/* Parses input files in the super simple format... Will try to return NULL on
+wrong files or inputs. Avoid bad inputs.*/
+node *load_graph(char *filepath);
+
+/* Returns 1 if it added a connection to node, 0 otherwise */
+int add_connection_to_node(node *base, node *next);

@@ -43,13 +43,9 @@ TYPE node_number_of_connections(node *root) {
     if (root->next[i] == NULL) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
-      printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
     } else {
       value[vallen] = root->next[i];
       ++vallen;
-      printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
       max += node_number_of_connections(root->next[i]);
@@ -78,14 +74,10 @@ TYPE node_number_of_connections_incl_loop(node *root) {
     if (root->next[i] == NULL) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
-      printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       ++max;
     } else {
       value[vallen] = root->next[i];
       ++vallen;
-      printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
       max += node_number_of_connections_incl_loop(root->next[i]);
@@ -160,6 +152,72 @@ void print_nodes_by_pointer(node *root) {
     free(value);
     vallen = 1;
   }
+}
+
+/* Returns 1 if it added a connection to node, 0 otherwise */
+int add_connection_to_node(node *base, node *next) {
+  for (VALUE_TYPE i = 0; i < MAX_VALUES; i++) {
+    if (base->next[i] == NULL) {
+      base->next[i] = next;
+      i = MAX_VALUES;
+      return 1; /* Worked */
+    }
+  }
+  return 0;
+}
+
+/* Parses input files in the super simple format... Will try to return NULL on
+wrong files or inputs. Avoid bad inputs.*/
+node *load_graph(char *filepath) {
+  FILE *file = fopen(filepath, "r");
+  if (!file) { /* If null */
+    fprintf(stderr, "Failed to open file %s\n", filepath);
+    return NULL;
+  }
+  char line[MAX_GRAPH_LINE_LEN];
+  VALUE_TYPE values[MAX_VALUES] = {0};
+  int valnum = 0;
+  unsigned short nodeidx = 0;
+  node *nodes = calloc(MAX_VALUES, sizeof(*nodes));
+  while (fgets(line, MAX_GRAPH_LINE_LEN, file)) {
+    /*    if (!has_root && line[0] == 'r' && line[1] == 'o' && line[2] == 'o' &&
+            line[3] == 't' && line[4] == ' ' && line[5] == 'n' && line[6] == 'o'
+       && line[7] == 'd' && line[8] == 'e' && line[9] == ' ') { values[valnum] =
+       line[10];
+          ++valnum;
+          roots[has_root].next = calloc(MAX_VALUES, sizeof(*roots));
+          roots[has_root].value = line[10];
+          ++has_root;
+        } else*/
+    if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
+        line[4] == ' ' && line[6] == '\n') { /* node definition */
+      values[valnum] = line[5];
+      valnum++;
+      nodes[nodeidx].next = calloc(MAX_VALUES, sizeof(*nodes->next));
+      nodes[nodeidx].value = line[5];
+      ++nodeidx;
+    } else if (nodeidx && is_x_in_arr_of_x(line[0], values) && line[1] == '-' &&
+               line[2] == '>' && is_x_in_arr_of_x(line[3], values)) {
+      if (nodeidx) {
+        unsigned x = 0, y = 0;
+        for (unsigned i = 0; i < nodeidx; i++) {
+          if (nodes[i].value == line[0]) {
+            x = i;
+          }
+          if (nodes[i].value == line[3]) {
+            y = i;
+          }
+        }
+        /*  Add Node connection */
+        add_connection_to_node(&nodes[x], &nodes[y]);
+      }
+    }
+  }
+  fclose(file);
+  if (nodeidx) {
+    return nodes;
+  }
+  return NULL;
 }
 
 // node *add_node_at_index(short idx, struct node **next) {}
