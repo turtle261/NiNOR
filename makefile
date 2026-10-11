@@ -1,29 +1,24 @@
 CC ?= gcc
-CFLAGS ?= -Wall -pedantic -std=c99 -O3 -march=native  -flto=auto
+CFLAGS ?= -Wall -pedantic -std=c99 -O2 -march=native  -flto=auto
 
 all:
-	$(CC) $(CFLAGS) ninor.c -o ninor
+	$(CC) $(CFLAGS) dcg.c tests.c -o dcg
+	$(CC) $(CFLAGS) dcg.c dcg_print_graph_from_file.c -o dcg_print
 
 clean:
 	rm -f a.out ninor dcg dcg_print
 
 clang:
-	clang $(CFLAGS) ninor.c -o ninor
-
-tcc:
-	tcc $(CFLAGS) ninor.c -o ninor
-
-dcg-clang:
 	clang  $(CFLAGS) dcg.c tests.c -o dcg
 	clang $(CFLAGS) dcg.c dcg_print_graph_from_file.c -o dcg_print
 
-dcg-gcc:
+gcc:
 	gcc $(CFLAGS) dcg.c tests.c -o dcg
 	gcc $(CFLAGS) dcg.c dcg_print_graph_from_file.c -o dcg_print
 
-dcg-tcc:
+tcc:
 	tcc $(CFLAGS) dcg.c tests.c -o dcg 
 	tcc $(CFLAGS) dcg.c dcg_print_graph_from_file.c -o dcg_print
 
-file-roundtrip-test:
+file-roundtrip-test: tcc
 	./scripts/test1.sh

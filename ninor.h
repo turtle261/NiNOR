@@ -30,17 +30,14 @@ F	F	T	T	F	F	T	T	F	T
 10: XNOR(equivalence)
 */
 
-#include <stdbool.h>
+#include "common.h"
 #include <stdio.h>
-#define GATECOUNT 4
-
 /* This macro sets the type, which restricts the maximum length of inputs to a
  * NiNOR gate. */
-#define TYPE unsigned long long
 
 /* Performs N-input NOR (NiNOR) on n(len) bool inputs (n_input) and returns
  * result */
-bool ninor(bool n_inputs[], TYPE len) {
+unsigned char ninor(unsigned char n_inputs[], TYPE len) {
   for (TYPE i = 0; i < len; i++) {
     if (n_inputs[i]) {
       return 0;
@@ -49,27 +46,11 @@ bool ninor(bool n_inputs[], TYPE len) {
   return 1;
 }
 
-/* Writes bools to stream cast to unsigned char */
-void putbools(bool n_inputs[], TYPE len, FILE *stream) {
+/* Writes unsigned chars up to len and offsets them so they print as numbers
+ * right. */
+void putchars(unsigned char n_inputs[], TYPE len, FILE *stream) {
   for (TYPE i = 0; i < len; i++) {
     putc(n_inputs[i] + '0', stream);
   }
   putc('\n', stream);
-}
-
-/*
-        program, ideally could be bits, serialized into inputs for the graph, as
-   initial state. graph ideally should have only nodes that are gates, and
-   should have a tick.
-*/
-
-int main(void) {
-  bool mylist[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  TYPE len = sizeof mylist / sizeof(bool);
-  putbools(mylist, len, stdout);
-  bool returned = ninor(mylist, len);
-  printf("returned=%d\n", returned);
-
-  return 0;
 }
