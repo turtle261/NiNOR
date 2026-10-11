@@ -43,7 +43,6 @@ int main(int argc, char *argv[]) {
   four->next[1] = NULL;
   printf("\n\n\n\n");
   print_nodes_by_pointer(one);
-  /* Here through to return 0, if commented, removes the segfault issue */
   node *five = malloc(sizeof(*five));
   node *six = malloc(sizeof(*six));
   five->next = malloc(2 * sizeof(five->next));
@@ -57,7 +56,6 @@ int main(int argc, char *argv[]) {
   printf("\n\n\n\n");
   print_nodes_by_pointer(five);
   printf("\n\n\n\n");
-  // print_nodes_by_pointer(six);
   print_nodes_by_value(six);
   free(one);
   free(two);
