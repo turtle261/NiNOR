@@ -37,8 +37,8 @@ F	F	T	T	F	F	T	T	F	T
 
 /* Performs N-input NOR (NiNOR) on n(len) bool inputs (n_input) and returns
  * result */
-unsigned char ninor(unsigned char n_inputs[], TYPE len) {
-  for (TYPE i = 0; i < len; i++) {
+unsigned char ninor(unsigned char n_inputs[], VALUE_TYPE len) {
+  for (VALUE_TYPE i = 0; i < len; i++) {
     if (n_inputs[i]) {
       return 0;
     }
