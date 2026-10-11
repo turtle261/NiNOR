@@ -9,9 +9,15 @@ typedef unsigned long long TYPE;
 
 /* The node itself which can point to several other nodes and hold a value */
 typedef struct node {
-  VALUE_TYPE value;   /* The nodes value */
+  VALUE_TYPE value; /* The nodes value -- can use as label, a value or ignore */
   struct node **next; /* Array of pointers to the nodes this one points to*/
 } node;
+
+typedef struct gate {
+  node node;             /* Lets make  gate "inherit" node */
+  unsigned char out : 1; /* What things this gate points to will get now */
+  unsigned char pending : 1;
+} gate;
 
 /* Function declarations */
 
