@@ -4,10 +4,8 @@ typedef unsigned long long TYPE;
 #define VALUE_TYPE unsigned char
 #define MAX_GRAPH_LINE_LEN 16
 
-/* Notes:
- * 1. A root node is a node with no incoming connection
- * 2. Use array of node--and find/identify roots.
- */
+/* #define ALWAYS_PRINT_GRAPH_POINTERS */
+/* #define ALWAYS_PRINT_GRAPH_VALUES */
 
 /* The node itself which can point to several other nodes and hold a value */
 typedef struct node {

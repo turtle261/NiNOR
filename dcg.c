@@ -105,12 +105,16 @@ void print_nodes_by_value(node *root) {
       o = 1;
     } else if (is_x_in_arr_of_x(root->next[i]->value, value)) {
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
+#ifdef ALWAYS_PRINT_GRAPH_POINTERS
+      printf("%p->%p\n", (void *)root, (void *)root->next[i]);
+#endif
     } else {
       value[vallen] = root->next[i]->value;
       ++vallen;
       printf("%c->%c\n", root->value, root->next[i]->value);
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
+#ifdef ALWAYS_PRINT_GRAPH_POINTERS
+      printf("%p->%p\n", (void *)root, (void *)root->next[i]);
+#endif
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
       print_nodes_by_value(root->next[i]);
@@ -135,12 +139,17 @@ void print_nodes_by_pointer(node *root) {
     if (root->next[i] == NULL) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
+
+#ifdef ALWAYS_PRINT_GRAPH_VALUES
       printf("%c->%c\n", root->value, root->next[i]->value);
+#endif
       printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
     } else {
       value[vallen] = root->next[i];
       ++vallen;
+#ifdef ALWAYS_PRINT_GRAPH_VALUES
       printf("%c->%c\n", root->value, root->next[i]->value);
+#endif
       printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
