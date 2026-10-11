@@ -73,3 +73,6 @@ void print_nodes_definition_by_value(node *root, FILE *output);
  * pointer, and thus DOES NOT assume nodes in the graph are unique by value. It
  * will write to the output (FILE *) parameter.*/
 void print_nodes_definition_by_pointer(node *root, FILE *output);
+
+/* Iterates the graph a tick */
+void step_graph(node *root);

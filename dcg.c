@@ -15,7 +15,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
 #include "dcg.h"
-#include "ninor.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -320,4 +319,130 @@ node *load_graph(char *filepath) {
     return nodes;
   }
   return NULL;
+}
+
+/* Sets pending to out */
+void set_graph_pending_to_out(node *root) {
+  static node **val;
+  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
+  static VALUE_TYPE vallen = 1;
+  (!val[0]) ? val[0] = root : 0;
+
+  for (unsigned i = 0, o = 0; !o; ++i) {
+    if (root->next[i] == NULL) {
+      o = 1;
+    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
+      /* Node we've seen before */
+      if (root->out) {
+        root->next[i]->pending = 1;
+      }
+    } else { /* Node not yet traversed from root before, so traverse */
+      val[vallen] = root->next[i];
+      ++vallen;
+      if (root->out) {
+        root->next[i]->pending = 1;
+      }
+      int temp = is_first;
+      (temp) ? is_first = 0 : 0;
+      set_graph_pending_to_out(root->next[i]);
+      (temp) ? is_first = 1 : 0;
+    }
+  }
+  if (is_first) {
+    free(val);
+    vallen = 1;
+  }
+}
+
+/* Sets out zero  */
+void set_graph_out_to_zero(node *root) {
+  static node **val;
+  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
+  static VALUE_TYPE vallen = 1;
+  (!val[0]) ? val[0] = root : 0;
+  root->out = 0;
+  for (unsigned i = 0, o = 0; !o; ++i) {
+    if (root->next[i] == NULL) {
+      o = 1;
+    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
+      /* Node we've seen before */
+    } else { /* Node not yet traversed from root before, so traverse */
+      val[vallen] = root->next[i];
+      ++vallen;
+      int temp = is_first;
+      (temp) ? is_first = 0 : 0;
+      set_graph_out_to_zero(root->next[i]);
+      (temp) ? is_first = 1 : 0;
+    }
+  }
+  if (is_first) {
+    free(val);
+    vallen = 1;
+  }
+}
+
+/* Sets out to pending*/
+void set_graph_out_to_pending(node *root) {
+  static node **val;
+  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
+  static VALUE_TYPE vallen = 1;
+  (!val[0]) ? val[0] = root : 0;
+  root->out = !root->pending;
+  for (unsigned i = 0, o = 0; !o; ++i) {
+    if (root->next[i] == NULL) {
+      o = 1;
+    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
+      /* Node we've seen before */
+    } else { /* Node not yet traversed from root before, so traverse */
+      val[vallen] = root->next[i];
+      ++vallen;
+      int temp = is_first;
+      (temp) ? is_first = 0 : 0;
+      set_graph_out_to_pending(root->next[i]);
+      (temp) ? is_first = 1 : 0;
+    }
+  }
+  if (is_first) {
+    free(val);
+    vallen = 1;
+  }
+}
+
+/* Sets graph pending to zero*/
+void set_graph_pending_to_zero(node *root) {
+  static node **val;
+  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
+  static VALUE_TYPE vallen = 1;
+  (!val[0]) ? val[0] = root : 0;
+  root->pending = 0;
+  for (unsigned i = 0, o = 0; !o; ++i) {
+    if (root->next[i] == NULL) {
+      o = 1;
+    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
+      /* Node we've seen before */
+    } else { /* Node not yet traversed from root before, so traverse */
+      val[vallen] = root->next[i];
+      ++vallen;
+      int temp = is_first;
+      (temp) ? is_first = 0 : 0;
+      set_graph_pending_to_zero(root->next[i]);
+      (temp) ? is_first = 1 : 0;
+    }
+  }
+  if (is_first) {
+    free(val);
+    vallen = 1;
+  }
+}
+
+void step_graph(node *root) {
+  /* Assume pending is already all zeroes */
+  set_graph_pending_to_out(
+      root); /* Now pending holds the values for the input + 1 tick */
+  set_graph_out_to_zero(root); /* Remove the current ticks values so we can add
+                                  the next tick values. */
+  set_graph_out_to_pending(root); /*Add the next ticks values to out. Now out is
+                                     the next ticks values*/
+  set_graph_pending_to_zero(root); /* Make it so the pendings are zero so this
+                                      function can be ran again */
 }
