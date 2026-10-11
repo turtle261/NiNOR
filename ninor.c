@@ -63,27 +63,6 @@ void putbools(bool n_inputs[], TYPE len, FILE *stream) {
    should have a tick.
 */
 
-struct row {
-  TYPE from;
-  TYPE to;
-  bool state;
-};
-typedef struct row row;
-
-void putgraph(row graph[], FILE *stream) {
-  for (TYPE i = 0; i < GATECOUNT; i++) {
-    putc(graph[i].from + '0', stream);
-    fprintf(stream, " -> ");
-    putc(graph[i].to + '0', stream);
-    putc('\n', stream);
-  }
-}
-
-row process(row graph[]) {
-
-  for (TYPE i = 0; i < GATECOUNT; i++) {
-  }
-}
 int main(void) {
   bool mylist[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -91,20 +70,6 @@ int main(void) {
   putbools(mylist, len, stdout);
   bool returned = ninor(mylist, len);
   printf("returned=%d\n", returned);
-
-  row graph[GATECOUNT];
-  graph[0].from = 0;
-  graph[0].state = 1;
-  graph[1].state = 0;
-  graph[2].state = 0;
-  graph[3].state = 0;
-  graph[0].to = 1;
-  graph[1].from = 1;
-  graph[1].to = 2;
-  graph[2].from = 3;
-  graph[2].to = 0;
-
-  putgraph(graph, stdout);
 
   return 0;
 }
