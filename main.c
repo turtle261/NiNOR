@@ -57,6 +57,13 @@ int main(int argc, char *argv[]) {
   print_nodes_by_pointer(five);
   printf("\n\n\n\n");
   print_nodes_by_value(six);
+
+  free(one->next);
+  free(two->next);
+  free(three->next);
+  free(four->next);
+  free(five->next);
+  free(six->next);
   free(one);
   free(two);
   free(three);
