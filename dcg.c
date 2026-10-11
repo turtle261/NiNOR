@@ -289,5 +289,3 @@ node *load_graph(char *filepath) {
   }
   return NULL;
 }
-
-// node *add_node_at_index(short idx, struct node **next) {}
