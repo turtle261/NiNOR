@@ -1,3 +1,4 @@
+#include <stdio.h>
 typedef unsigned long long TYPE;
 
 #define MAX_VALUES 255
@@ -9,27 +10,23 @@ typedef unsigned long long TYPE;
 
 /* The node itself which can point to several other nodes and hold a value */
 typedef struct node {
-  VALUE_TYPE value; /* The nodes value -- can use as label, a value or ignore */
   struct node **next; /* Array of pointers to the nodes this one points to*/
-} node;
-
-typedef struct gate {
-  node node;             /* Lets make  gate "inherit" node */
-  unsigned char out : 1; /* What things this gate points to will get now */
+  VALUE_TYPE value; /* The nodes value -- can use as label, a value or ignore */
+  unsigned char out : 1; /* What things this node points to will get now */
   unsigned char pending : 1;
-} gate;
+} node;
 
 /* Function declarations */
 
 /* Prints the graph following a root node, including identifying loops/cycles.
  * It does this by pointer, and thus DOES NOT assume nodes in the graph are
- * unique by value.*/
-void print_nodes_by_pointer(node *root);
+ * unique by value. It * will write to the output (FILE *) parameter.*/
+void print_nodes_by_pointer(node *root, FILE *output);
 
 /* Prints the graph following a root node, including identifying loops/cycles.
  * It does this by value, and thus assumes nodes in the graph are unique by
- * value.*/
-void print_nodes_by_value(node *root);
+ * value. It * will write to the output (FILE *) parameter.*/
+void print_nodes_by_value(node *root, FILE *output);
 
 /* Gets the number of connections derived from a given root node by pointer
  * (thus it DOES NOT assume unique values for each node in the graph). I.e.
@@ -56,3 +53,13 @@ node *load_graph(char *filepath);
 
 /* Returns 1 if it added a connection to node, 0 otherwise */
 int add_connection_to_node(node *base, node *next);
+
+/* Prints the node definitions of a graph following a root node. It does this by
+ * value, and thus assumes nodes in the graph are unique by value. It will write
+ * to the output (FILE *) parameter.*/
+void print_nodes_definition_by_value(node *root, FILE *output);
+
+/* Prints the node definitions of a graph following a root node. It does this by
+ * pointer, and thus DOES NOT assume nodes in the graph are unique by value. It
+ * will write to the output (FILE *) parameter.*/
+void print_nodes_definition_by_pointer(node *root, FILE *output);

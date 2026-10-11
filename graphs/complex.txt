@@ -1,0 +1,21 @@
+node a
+node b
+node c
+node d
+node f
+node g
+node h
+node i
+node j
+
+a->b
+b->c
+c->d
+d->f
+f->g
+h->i
+j->i
+f->j
+i->h
+c->h
+b->h

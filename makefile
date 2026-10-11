@@ -24,3 +24,6 @@ dcg-gcc:
 dcg-tcc:
 	tcc $(CFLAGS) dcg.c tests.c -o dcg 
 	tcc $(CFLAGS) dcg.c dcg_print_graph_from_file.c -o dcg_print
+
+file-roundtrip-test:
+	./scripts/test1.sh

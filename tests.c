@@ -29,9 +29,9 @@ int main(int argc, char *argv[]) {
   printf("%u\n", (unsigned)node_number_of_connections(two));
   printf("%u\n", (unsigned)node_number_of_connections(three));
   printf("%u\n", (unsigned)node_number_of_connections(four));
-  print_nodes_by_value(one);
+  print_nodes_by_value(one, stdout);
   printf("%u\n", (unsigned)node_number_of_connections_incl_loop(one));
-  print_nodes_by_pointer(one);
+  print_nodes_by_pointer(one, stdout);
   one->next[0] = two;
   one->next[1] = three;
   one->next[2] = NULL;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   four->next[0] = four;
   four->next[1] = NULL;
   printf("\n\n\n\n");
-  print_nodes_by_pointer(one);
+  print_nodes_by_pointer(one, stdout);
   node *five = malloc(sizeof(*five));
   node *six = malloc(sizeof(*six));
   five->next = malloc(2 * sizeof(five->next));
@@ -54,9 +54,9 @@ int main(int argc, char *argv[]) {
   five->next[1] = NULL;
   six->next[1] = NULL;
   printf("\n\n\n\n");
-  print_nodes_by_pointer(five);
+  print_nodes_by_pointer(five, stdout);
   printf("\n\n\n\n");
-  print_nodes_by_value(six);
+  print_nodes_by_value(six, stdout);
 
   free(one->next);
   free(two->next);

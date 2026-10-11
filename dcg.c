@@ -95,7 +95,7 @@ TYPE node_number_of_connections_incl_loop(node *root) {
 /* Prints the graph following a root node, including identifying loops/cycles.
  * It does this by value, and thus assumes nodes in the graph are unique by
  * value.*/
-void print_nodes_by_value(node *root) {
+void print_nodes_by_value(node *root, FILE *output) {
   static VALUE_TYPE *value;
   (is_first) ? value = calloc(MAX_VALUES, sizeof(*value)) : 0;
   static VALUE_TYPE vallen = 1;
@@ -104,20 +104,20 @@ void print_nodes_by_value(node *root) {
     if (root->next[i] == NULL) {
       o = 1;
     } else if (is_x_in_arr_of_x(root->next[i]->value, value)) {
-      printf("%c->%c\n", root->value, root->next[i]->value);
+      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
 #ifdef ALWAYS_PRINT_GRAPH_POINTERS
-      printf("%p->%p\n", (void *)root, (void *)root->next[i]);
+      fprintf(output, "%p->%p\n", (void *)root, (void *)root->next[i]);
 #endif
     } else {
       value[vallen] = root->next[i]->value;
       ++vallen;
-      printf("%c->%c\n", root->value, root->next[i]->value);
+      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
 #ifdef ALWAYS_PRINT_GRAPH_POINTERS
-      printf("%p->%p\n", (void *)root, (void *)root->next[i]);
+      fprintf(output, "%p->%p\n", (void *)root, (void *)root->next[i]);
 #endif
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
-      print_nodes_by_value(root->next[i]);
+      print_nodes_by_value(root->next[i], output);
       (temp) ? is_first = 1 : 0;
     }
   }
@@ -130,7 +130,7 @@ void print_nodes_by_value(node *root) {
 /* Prints the graph following a root node, including identifying loops/cycles.
  * It does this by pointer, and thus DOES NOT assume nodes in the graph are
  * unique by value.*/
-void print_nodes_by_pointer(node *root) {
+void print_nodes_by_pointer(node *root, FILE *output) {
   static void **value;
   (is_first) ? value = calloc(MAX_VALUES, sizeof(value)) : 0;
   static VALUE_TYPE vallen = 1;
@@ -141,23 +141,84 @@ void print_nodes_by_pointer(node *root) {
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
 
 #ifdef ALWAYS_PRINT_GRAPH_VALUES
-      printf("%c->%c\n", root->value, root->next[i]->value);
+      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
 #endif
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
+      fprintf(output, "POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
     } else {
       value[vallen] = root->next[i];
       ++vallen;
 #ifdef ALWAYS_PRINT_GRAPH_VALUES
-      printf("%c->%c\n", root->value, root->next[i]->value);
+      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
 #endif
-      printf("POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
+      fprintf(output, "POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
       int temp = is_first;
       (temp) ? is_first = 0 : 0;
-      print_nodes_by_pointer(root->next[i]);
+      print_nodes_by_pointer(root->next[i], output);
       (temp) ? is_first = 1 : 0;
     }
   }
   if (is_first) {
+    free(value);
+    vallen = 1;
+  }
+}
+
+/* Prints the node definitions of a graph following a root node. It does this by
+ * pointer, and thus DOES NOT assume nodes in the graph are unique by value. It
+ * will write to the output (FILE *) parameter.*/
+void print_nodes_definition_by_pointer(node *root, FILE *output) {
+  static node **val;
+  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
+  static VALUE_TYPE vallen = 1;
+  (!val[0]) ? val[0] = root : 0;
+  for (unsigned i = 0, o = 0; !o; i++) {
+    if (root->next[i] == NULL) {
+      o = 1;
+    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
+
+    } else {
+      val[vallen] = root->next[i];
+      ++vallen;
+      int temp = is_first;
+      (temp) ? is_first = 0 : 0;
+      print_nodes_definition_by_pointer(root->next[i], output);
+      (temp) ? is_first = 1 : 0;
+    }
+  }
+  if (is_first) {
+    for (VALUE_TYPE i = 0; i < vallen; i++) {
+      fprintf(output, "node %c\n", val[i]->value);
+    }
+    free(val);
+    vallen = 1;
+  }
+}
+
+/* Prints the node definitions of a graph following a root node. It does this by
+ * value, and thus assumes nodes in the graph are unique by value. It will write
+ * to the output (FILE *) parameter.*/
+void print_nodes_definition_by_value(node *root, FILE *output) {
+  static VALUE_TYPE *value;
+  (is_first) ? value = calloc(MAX_VALUES, sizeof(*value)) : 0;
+  static VALUE_TYPE vallen = 1;
+  (!value[0]) ? value[0] = root->value : 0;
+  for (unsigned i = 0, o = 0; !o; i++) {
+    if (root->next[i] == NULL) {
+      o = 1;
+    } else if (is_x_in_arr_of_x(root->next[i]->value, value)) {
+    } else {
+      value[vallen] = root->next[i]->value;
+      ++vallen;
+      int temp = is_first;
+      (temp) ? is_first = 0 : 0;
+      print_nodes_definition_by_value(root->next[i], output);
+      (temp) ? is_first = 1 : 0;
+    }
+  }
+  if (is_first) {
+    for (VALUE_TYPE i = 0; i < vallen; i++) {
+      fprintf(output, "node %c\n", value[i]);
+    }
     free(value);
     vallen = 1;
   }
