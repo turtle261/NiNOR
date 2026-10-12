@@ -76,3 +76,5 @@ void print_nodes_definition_by_pointer(node *root, FILE *output);
 
 /* Iterates the graph a tick */
 void step_graph(node *root);
+void print_raw(node *root, FILE *output);
+void print_definitions_raw(node *root, FILE *output);

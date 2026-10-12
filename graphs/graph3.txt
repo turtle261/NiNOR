@@ -1,0 +1,9 @@
+node a 0
+node b 0
+node c 0
+node d 1
+
+c->a
+b->a
+d->c
+d->b

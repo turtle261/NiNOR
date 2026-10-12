@@ -435,6 +435,22 @@ void set_graph_pending_to_zero(node *root) {
   }
 }
 
+void print_definitions_raw(node *root, FILE *output) {
+  while (root->next) {
+    fprintf(output, "node %c %d\n", root->value, root->out);
+    root++;
+  }
+}
+
+void print_raw(node *root, FILE *output) {
+  while (root->next) {
+    for (TYPE i = 0; root->next[i]; ++i) {
+      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
+    }
+    root++;
+  }
+}
+
 void step_graph(node *root) {
   /* Assume pending is already all zeroes */
   set_graph_pending_to_out(
