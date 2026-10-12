@@ -17,7 +17,7 @@ You can write a graph file as per the examples in ./graphs/, and run them and co
 ```bash
 ./dcg graphs/complex.txt 999
 ```
-This will return the graph in the same format as the input format, except stepped 999 times.
+This will print to stdout the graph in the same format as the input format, except stepped 999 times.
 
 A graph file is a text file with newline seperated node declarations and node pointer definitions.
 For example:
