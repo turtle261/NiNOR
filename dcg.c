@@ -20,8 +20,8 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 static unsigned char is_first = 1;
 
-/* Check if an unsigned char is in an unsigned string (array of unsigned chars,
- * terminated by '\0' */
+/* Check if a VALUE_TYPE is in an array of VALUE_TYPE,
+ * terminated by '\0' . Returns a boolean as unsigned char.*/
 unsigned char is_x_in_arr_of_x(VALUE_TYPE in, VALUE_TYPE *check) {
   VALUE_TYPE iter = 0;
   while (check[iter] != '\0') {
@@ -110,20 +110,21 @@ TYPE node_number_of_connections_incl_loop(node *root) {
 
 void print_graph_definitions(node *root, FILE *output) {
   while (root->next) {
-    fprintf(output, "node %c %d\n", root->value, root->out);
+    fprintf(output, GRAPH_DEFINE_FORMAT_STR, root->value, root->out);
     root++;
   }
 }
 void print_graph_definitions_with_pointers(node *root, FILE *output) {
   while (root->next) {
-    fprintf(output, "node %c(%p) %d\n", root->value, (void *)root, root->out);
+    fprintf(output, GRAPH_DEFINE_FORMAT_STR_WITH_POINTER, root->value,
+            (void *)root, root->out);
     root++;
   }
 }
 void print_graph(node *root, FILE *output) {
   while (root->next) {
     for (VALUE_TYPE i = 0; root->next[i]; ++i) {
-      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
+      fprintf(output, GRAPH_CONN_FORMAT_STR, root->value, root->next[i]->value);
     }
     root++;
   }
@@ -131,8 +132,8 @@ void print_graph(node *root, FILE *output) {
 void print_graph_with_pointers(node *root, FILE *output) {
   while (root->next) {
     for (VALUE_TYPE i = 0; root->next[i]; ++i) {
-      fprintf(output, "%c(%p)->%c(%p)\n", root->value, (void *)root,
-              root->next[i]->value, (void *)root->next[i]);
+      fprintf(output, GRAPH_CONN_FORMAT_STR_WITH_POINTER, root->value,
+              (void *)root, root->next[i]->value, (void *)root->next[i]);
     }
     root++;
   }
@@ -150,6 +151,37 @@ int add_connection_to_node(node *base, node *next) {
   return 0;
 }
 
+VALUE_TYPE get_value_from_line(char *line, unsigned char lineidx,
+                               unsigned char *finalidx) {
+  char value_word[MAX_GRAPH_LINE_LEN - 8];
+  for (unsigned char i = 0; i < (MAX_GRAPH_LINE_LEN - lineidx); ++i) {
+    if (line[i + lineidx] == ' ' || line[i + lineidx] == '\n' ||
+        line[i + lineidx] == '-') {
+      value_word[i] = '\0';
+      if (finalidx) { /* If finalidx is not a NULL pointer then set it to this
+                         value */
+        *finalidx = lineidx + (i - 1);
+      }
+      i = MAX_GRAPH_LINE_LEN; // leave the for loop
+    } else {
+      value_word[i] = line[i + lineidx];
+    }
+  }
+  return (VALUE_TYPE)strtoull(value_word, NULL, VALUE_IS_BASE);
+}
+
+unsigned char idx_first_char_after_arrow(char *line) {
+  unsigned char sum = 1;
+  while (line) {
+    if (*line == '>') {
+      break;
+    }
+    ++sum;
+    ++line;
+  }
+  return sum;
+}
+
 /* Parses input files in the super simple format... Will try to return NULL on
 wrong files or inputs. Avoid bad inputs.*/
 node *load_graph(char *filepath) {
@@ -165,37 +197,42 @@ node *load_graph(char *filepath) {
   node *nodes = calloc(MAX_VALUES + 1, sizeof(*nodes));
   while (fgets(line, MAX_GRAPH_LINE_LEN, file)) {
     if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
-        line[4] == ' ' &&
-        (line[6] == '\n' || line[6] == ' ')) { /* node declaration*/
-      values[valnum] = line[5];
-      valnum++;
+        line[4] == ' ') { /* node declaration*/
+      unsigned char lineidx = 5;
+      values[valnum] = get_value_from_line(line, lineidx, &lineidx);
       nodes[nodeidx].next = calloc(MAX_VALUES + 1, sizeof(*nodes->next));
-      nodes[nodeidx].value = line[5];
-      for (unsigned char i = 1; i < 3; ++i) {
-        if (line[5 + i] == '\0') {
-          i = 3;
-        } else if ((5 + i) == 7 && line[6] == ' ') {
-          nodes[nodeidx].out = line[7];
+      nodes[nodeidx].value = values[valnum];
+      ++valnum;
+      /* Set the out/pending values */
+      for (unsigned char i = 0; i < 4; ++i) {
+        if (line[lineidx + i] == '\0') {
+          i = 4;
+        } else if (line[lineidx + i - 1] == ' ' &&
+                   line[lineidx + i + 1] == '\n') {
+          nodes[nodeidx].out = (line[lineidx + i] != '0') ? 1 : 0;
           nodes[nodeidx].pending = 0; /* Initialize to zero */
         }
       }
       ++nodeidx;
-    } else if (nodeidx && is_x_in_arr_of_x(line[0], values) && line[1] == '-' &&
-               line[2] == '>' && is_x_in_arr_of_x(line[3], values)) {
+    } else if (nodeidx &&
+               is_x_in_arr_of_x(get_value_from_line(line, 0, NULL), values) &&
+               is_x_in_arr_of_x(
+                   get_value_from_line(line, idx_first_char_after_arrow(line),
+                                       NULL),
+                   values)) {
       /* Direction definition */
-      if (nodeidx) {
-        VALUE_TYPE x = 0, y = 0;
-        for (VALUE_TYPE i = 0; i < nodeidx; ++i) {
-          if (nodes[i].value == line[0]) {
-            x = i;
-          }
-          if (nodes[i].value == line[3]) {
-            y = i;
-          }
+      VALUE_TYPE x = 0, y = 0;
+      for (VALUE_TYPE i = 0; i < nodeidx; ++i) {
+        if (nodes[i].value == get_value_from_line(line, 0, NULL)) {
+          x = i;
         }
-        /*  Add Node connection */
-        add_connection_to_node(&nodes[x], &nodes[y]);
+        if (nodes[i].value ==
+            get_value_from_line(line, idx_first_char_after_arrow(line), NULL)) {
+          y = i;
+        }
       }
+      /*  Add Node connection */
+      add_connection_to_node(&nodes[x], &nodes[y]);
     }
   }
   fclose(file);

@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
   } else {
     printf("Size of:\n");
     printf("\tNode: %u\n", (unsigned)sizeof(node));
+    printf("MAX VALUE_TYPE = %zu\n", (size_t)(MAX_VALUES));
   }
   return 0;
 }

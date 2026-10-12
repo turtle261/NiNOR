@@ -3,19 +3,19 @@ node b 0
 node c 1
 node d 1
 node f 1
-node g 0
-node h 0
-node i 1
-node j 0
+node 1 0
+node 2 0
+node 3 1
+node 4 0
 
 a->b
 b->c
 c->d
 d->f
-f->g
-h->i
-j->i
-f->j
-i->h
-c->h
-b->h
+f->1
+2->3
+4->3
+f->4
+3->2
+c->2
+b->2
