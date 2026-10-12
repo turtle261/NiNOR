@@ -32,3 +32,6 @@ Right now a maximum of 65535 nodes may be used, until I optimize things further.
 Each node must have a unique hexadecimal value as its identifier.
 
 
+## License
+This is Free Software available under the terms of the (brief) ISC license, visible in this repository as the file LICENSE.
+
