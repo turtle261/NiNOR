@@ -8,7 +8,7 @@ The idea comes from [James Bowery](https://github.com/jabowery): https://groups.
 
 ## Usage
 
-This essentially works currently as an emulator of Turing's A-type Machines, though using NOR rather than NAND.
+This essentially works currently as an emulator of [Turing's A-type Machines](https://weightagnostic.github.io/papers/turing1948.pdf), though using NOR rather than NAND.
 
 You can invert the input bits and the output bits of the graphs and get equivalent results to a NAND A-type machine.
 
