@@ -15,3 +15,20 @@ You can write a graph file as per the examples in ./graphs/, and run them and co
 ```bash
 ./dcg graphs/complex.txt 999
 ```
+This will return the graph in the same format as the input format, except stepped 999 times.
+
+A graph file is a text file with newline seperated node declarations and node pointer definitions.
+For example
+```
+node a 1
+node b 0
+a->b
+```
+line 1: This defines a node as a(which it interprets as hexadecimal), with an initial output of 1.
+line 2: It defines a second node with an initial output of 0.
+line 3: It makes node a point to node b
+
+Right now a maximum of 65535 nodes may be used, until I optimize things further. 
+Each node must have a unique hexadecimal value as its identifier.
+
+
