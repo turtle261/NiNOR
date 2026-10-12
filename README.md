@@ -6,6 +6,9 @@ This project aims to develop an emulator thereof, and act as a library for build
 
 The idea comes from [James Bowery](https://github.com/jabowery): https://groups.google.com/g/ait0/c/D1wd2fV6Ax4 
 
+## Compilation
+Clone the repository. Run `make` on UNIX-like systems. Run `cl dcg.c main.c` on Windows.
+
 ## Usage
 
 This essentially works currently as an emulator of [Turing's A-type Machines](https://weightagnostic.github.io/papers/turing1948.pdf), though using NOR rather than NAND.
