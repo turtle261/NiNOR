@@ -52,7 +52,7 @@ unsigned char is_p_in_arr_of_p(void *in, void **check) {
 TYPE node_number_of_connections(node *root) {
   static void **value;
   TYPE max = 0;
-  (is_first) ? value = calloc(MAX_VALUES, sizeof(value)) : 0;
+  (is_first) ? value = calloc(MAX_VALUES + 1, sizeof(value)) : 0;
   static VALUE_TYPE vallen = 1;
   (!value[0]) ? value[0] = root : 0;
   for (unsigned i = 0, o = 0; !o; i++) {
@@ -83,7 +83,7 @@ TYPE node_number_of_connections(node *root) {
 TYPE node_number_of_connections_incl_loop(node *root) {
   static void **value;
   TYPE max = 0;
-  (is_first) ? value = calloc(MAX_VALUES, sizeof(value)) : 0;
+  (is_first) ? value = calloc(MAX_VALUES + 1, sizeof(value)) : 0;
   static VALUE_TYPE vallen = 1;
   (!value[0]) ? value[0] = root : 0;
   for (unsigned i = 0, o = 0; !o; i++) {
@@ -162,14 +162,14 @@ node *load_graph(char *filepath) {
   VALUE_TYPE values[MAX_VALUES] = {0};
   int valnum = 0;
   unsigned short nodeidx = 0;
-  node *nodes = calloc(MAX_VALUES, sizeof(*nodes));
+  node *nodes = calloc(MAX_VALUES + 1, sizeof(*nodes));
   while (fgets(line, MAX_GRAPH_LINE_LEN, file)) {
     if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
         line[4] == ' ' &&
         (line[6] == '\n' || line[6] == ' ')) { /* node declaration*/
       values[valnum] = line[5];
       valnum++;
-      nodes[nodeidx].next = calloc(MAX_VALUES, sizeof(*nodes->next));
+      nodes[nodeidx].next = calloc(MAX_VALUES + 1, sizeof(*nodes->next));
       nodes[nodeidx].value = line[5];
       for (unsigned char i = 1; i < 3; ++i) {
         if (line[5 + i] == '\0') {
