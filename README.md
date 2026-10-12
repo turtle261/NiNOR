@@ -29,7 +29,7 @@ node a 1
 node b 0
 a->b
 ```
-line 1: This defines a node as a(which it interprets as hexadecimal), with an initial output of 1.
+line 1: This defines a node as a(which it interprets as hexadecimal), with an initial output(starting state) of 1.
 
 line 2: It defines a second node with an initial output of 0.
 
