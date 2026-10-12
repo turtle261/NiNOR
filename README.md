@@ -8,7 +8,7 @@ The idea comes from [James Bowery](https://github.com/jabowery): https://groups.
 
 ## Usage
 
-This essentially works currently as an emulator of Turing's A-type Machines, though using NOR rather than NAND.
+This essentially works currently as an emulator of Turing's A-type Machines, though using NOR rather than NAND. You can invert the input bits and the output bits of the graphs and get equivalent results to a NAND A-type machine.
 
 You can write a graph file as per the examples in ./graphs/, and run them and compute them to any arbitrary tick(in this example 999 steps) like this:
 
