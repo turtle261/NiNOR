@@ -18,7 +18,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
-static int is_first = 1;
+static unsigned char is_first = 1;
 
 /* Check if an unsigned char is in an unsigned string (array of unsigned chars,
  * terminated by '\0' */
@@ -55,14 +55,14 @@ TYPE node_number_of_connections(node *root) {
   (is_first) ? value = calloc(MAX_VALUES + 1, sizeof(value)) : 0;
   static VALUE_TYPE vallen = 1;
   (!value[0]) ? value[0] = root : 0;
-  for (unsigned i = 0, o = 0; !o; i++) {
+  for (VALUE_TYPE i = 0, o = 0; !o; ++i) {
     if (root->next[i] == NULL) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
     } else {
       value[vallen] = root->next[i];
       ++vallen;
-      int temp = is_first;
+      unsigned char temp = is_first;
       (temp) ? is_first = 0 : 0;
       max += node_number_of_connections(root->next[i]);
       ++max;
@@ -86,7 +86,7 @@ TYPE node_number_of_connections_incl_loop(node *root) {
   (is_first) ? value = calloc(MAX_VALUES + 1, sizeof(value)) : 0;
   static VALUE_TYPE vallen = 1;
   (!value[0]) ? value[0] = root : 0;
-  for (unsigned i = 0, o = 0; !o; i++) {
+  for (VALUE_TYPE i = 0, o = 0; !o; ++i) {
     if (root->next[i] == NULL) {
       o = 1;
     } else if (is_p_in_arr_of_p(root->next[i], value)) {
@@ -94,7 +94,7 @@ TYPE node_number_of_connections_incl_loop(node *root) {
     } else {
       value[vallen] = root->next[i];
       ++vallen;
-      int temp = is_first;
+      unsigned char temp = is_first;
       (temp) ? is_first = 0 : 0;
       max += node_number_of_connections_incl_loop(root->next[i]);
       ++max;
@@ -122,7 +122,7 @@ void print_graph_definitions_with_pointers(node *root, FILE *output) {
 }
 void print_graph(node *root, FILE *output) {
   while (root->next) {
-    for (TYPE i = 0; root->next[i]; ++i) {
+    for (VALUE_TYPE i = 0; root->next[i]; ++i) {
       fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
     }
     root++;
@@ -130,7 +130,7 @@ void print_graph(node *root, FILE *output) {
 }
 void print_graph_with_pointers(node *root, FILE *output) {
   while (root->next) {
-    for (TYPE i = 0; root->next[i]; ++i) {
+    for (VALUE_TYPE i = 0; root->next[i]; ++i) {
       fprintf(output, "%c(%p)->%c(%p)\n", root->value, (void *)root,
               root->next[i]->value, (void *)root->next[i]);
     }
@@ -140,7 +140,7 @@ void print_graph_with_pointers(node *root, FILE *output) {
 
 /* Returns 1 if it added a connection to node, 0 otherwise */
 int add_connection_to_node(node *base, node *next) {
-  for (VALUE_TYPE i = 0; i < MAX_VALUES; i++) {
+  for (VALUE_TYPE i = 0; i < MAX_VALUES; ++i) {
     if (base->next[i] == NULL) {
       base->next[i] = next;
       i = MAX_VALUES;
@@ -160,8 +160,8 @@ node *load_graph(char *filepath) {
   }
   char line[MAX_GRAPH_LINE_LEN];
   VALUE_TYPE values[MAX_VALUES] = {0};
-  int valnum = 0;
-  unsigned short nodeidx = 0;
+  VALUE_TYPE valnum = 0;
+  VALUE_TYPE nodeidx = 0;
   node *nodes = calloc(MAX_VALUES + 1, sizeof(*nodes));
   while (fgets(line, MAX_GRAPH_LINE_LEN, file)) {
     if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
@@ -184,8 +184,8 @@ node *load_graph(char *filepath) {
                line[2] == '>' && is_x_in_arr_of_x(line[3], values)) {
       /* Direction definition */
       if (nodeidx) {
-        unsigned x = 0, y = 0;
-        for (unsigned i = 0; i < nodeidx; i++) {
+        VALUE_TYPE x = 0, y = 0;
+        for (VALUE_TYPE i = 0; i < nodeidx; ++i) {
           if (nodes[i].value == line[0]) {
             x = i;
           }
@@ -214,7 +214,7 @@ node *load_graph(char *filepath) {
 /* Sets pending to out */
 void set_graph_pending_to_out(node *root) {
   while (root->next) {
-    for (TYPE i = 0; root->next[i]; ++i) {
+    for (VALUE_TYPE i = 0; root->next[i]; ++i) {
       if (root->out) {
         root->next[i]->pending = 1;
       }
@@ -226,7 +226,7 @@ void set_graph_pending_to_out(node *root) {
 /* Sets out to zero  */
 void set_graph_out_to_zero(node *root) {
   while (root->next) {
-    for (TYPE i = 0; root->next[i]; ++i) {
+    for (VALUE_TYPE i = 0; root->next[i]; ++i) {
       root->next[i]->out = 0;
     }
     root->out = 0;
@@ -237,7 +237,7 @@ void set_graph_out_to_zero(node *root) {
 /* Sets out to !pending*/
 void set_graph_out_to_pending(node *root) {
   while (root->next) {
-    for (TYPE i = 0; root->next[i]; ++i) {
+    for (VALUE_TYPE i = 0; root->next[i]; ++i) {
       root->next[i]->out = !root->next[i]->pending;
     }
     root->out = !root->pending;
@@ -248,7 +248,7 @@ void set_graph_out_to_pending(node *root) {
 /* Sets graph pending to zero*/
 void set_graph_pending_to_zero(node *root) {
   while (root->next) {
-    for (TYPE i = 0; root->next[i]; ++i) {
+    for (VALUE_TYPE i = 0; root->next[i]; ++i) {
       root->next[i]->pending = 0;
     }
     root->pending = 0;

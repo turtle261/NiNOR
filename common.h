@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define TYPE unsigned long long
+#define TYPE size_t
 
 #define MAX_VALUES 255
 #define VALUE_TYPE unsigned char
