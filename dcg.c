@@ -108,140 +108,33 @@ TYPE node_number_of_connections_incl_loop(node *root) {
   return max;
 }
 
-/* Prints the graph following a root node, including identifying loops/cycles.
- * It does this by value, and thus assumes nodes in the graph are unique by
- * value.*/
-void print_nodes_by_value(node *root, FILE *output) {
-  static VALUE_TYPE *value;
-  (is_first) ? value = calloc(MAX_VALUES, sizeof(*value)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!value[0]) ? value[0] = root->value : 0;
-  for (unsigned i = 0, o = 0; !o; i++) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_x_in_arr_of_x(root->next[i]->value, value)) {
-      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
-#ifdef ALWAYS_PRINT_GRAPH_POINTERS
-      fprintf(output, "%p->%p\n", (void *)root, (void *)root->next[i]);
-#endif
-    } else {
-      value[vallen] = root->next[i]->value;
-      ++vallen;
-      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
-#ifdef ALWAYS_PRINT_GRAPH_POINTERS
-      fprintf(output, "%p->%p\n", (void *)root, (void *)root->next[i]);
-#endif
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      print_nodes_by_value(root->next[i], output);
-      (temp) ? is_first = 1 : 0;
-    }
-  }
-  if (is_first) {
-    free(value);
-    vallen = 1;
+void print_graph_definitions(node *root, FILE *output) {
+  while (root->next) {
+    fprintf(output, "node %c %d\n", root->value, root->out);
+    root++;
   }
 }
-
-/* Prints the graph following a root node, including identifying loops/cycles.
- * It does this by pointer, and thus DOES NOT assume nodes in the graph are
- * unique by value.*/
-void print_nodes_by_pointer(node *root, FILE *output) {
-  static void **value;
-  (is_first) ? value = calloc(MAX_VALUES, sizeof(value)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!value[0]) ? value[0] = root : 0;
-  for (unsigned i = 0, o = 0; !o; i++) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_p_in_arr_of_p(root->next[i], value)) {
-
-#ifdef ALWAYS_PRINT_GRAPH_VALUES
-      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
-#endif
-      fprintf(output, "POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
-    } else {
-      value[vallen] = root->next[i];
-      ++vallen;
-#ifdef ALWAYS_PRINT_GRAPH_VALUES
-      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
-#endif
-      fprintf(output, "POINTER: %p->%p\n", (void *)root, (void *)root->next[i]);
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      print_nodes_by_pointer(root->next[i], output);
-      (temp) ? is_first = 1 : 0;
-    }
-  }
-  if (is_first) {
-    free(value);
-    vallen = 1;
+void print_graph_definitions_with_pointers(node *root, FILE *output) {
+  while (root->next) {
+    fprintf(output, "node %c(%p) %d\n", root->value, (void *)root, root->out);
+    root++;
   }
 }
-
-/* Prints the node definitions of a graph following a root node. It does this by
- * pointer, and thus DOES NOT assume nodes in the graph are unique by value. It
- * will write to the output (FILE *) parameter.*/
-void print_nodes_definition_by_pointer(node *root, FILE *output) {
-  static node **val;
-  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!val[0]) ? val[0] = root : 0;
-  for (unsigned i = 0, o = 0; !o; i++) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
-
-    } else {
-      val[vallen] = root->next[i];
-      ++vallen;
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      print_nodes_definition_by_pointer(root->next[i], output);
-      (temp) ? is_first = 1 : 0;
+void print_graph(node *root, FILE *output) {
+  while (root->next) {
+    for (TYPE i = 0; root->next[i]; ++i) {
+      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
     }
-  }
-  if (is_first) {
-    for (VALUE_TYPE i = 0; i < vallen; i++) {
-      fprintf(output, "node %c %d", val[i]->value, val[i]->out);
-#ifdef DCG_ALWAYS_PRINT_PENDING_VALUE
-      fprintf(output, " (pending: %d)", val[i]->pending);
-#endif
-      putc('\n', output);
-    }
-    free(val);
-    vallen = 1;
+    root++;
   }
 }
-
-/* Prints the node definitions of a graph following a root node. It does this by
- * value, and thus assumes nodes in the graph are unique by value. It will write
- * to the output (FILE *) parameter. Will not (yet?) work with its out
- * parameter*/
-void print_nodes_definition_by_value(node *root, FILE *output) {
-  static VALUE_TYPE *value;
-  (is_first) ? value = calloc(MAX_VALUES, sizeof(*value)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!value[0]) ? value[0] = root->value : 0;
-  for (unsigned i = 0, o = 0; !o; i++) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_x_in_arr_of_x(root->next[i]->value, value)) {
-    } else {
-      value[vallen] = root->next[i]->value;
-      ++vallen;
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      print_nodes_definition_by_value(root->next[i], output);
-      (temp) ? is_first = 1 : 0;
+void print_graph_with_pointers(node *root, FILE *output) {
+  while (root->next) {
+    for (TYPE i = 0; root->next[i]; ++i) {
+      fprintf(output, "%c(%p)->%c(%p)\n", root->value, (void *)root,
+              root->next[i]->value, (void *)root->next[i]);
     }
-  }
-  if (is_first) {
-    for (VALUE_TYPE i = 0; i < vallen; i++) {
-      fprintf(output, "node %c\n", value[i]);
-    }
-    free(value);
-    vallen = 1;
+    root++;
   }
 }
 
@@ -271,15 +164,6 @@ node *load_graph(char *filepath) {
   unsigned short nodeidx = 0;
   node *nodes = calloc(MAX_VALUES, sizeof(*nodes));
   while (fgets(line, MAX_GRAPH_LINE_LEN, file)) {
-    /*    if (!has_root && line[0] == 'r' && line[1] == 'o' && line[2] == 'o' &&
-            line[3] == 't' && line[4] == ' ' && line[5] == 'n' && line[6] == 'o'
-       && line[7] == 'd' && line[8] == 'e' && line[9] == ' ') { values[valnum] =
-       line[10];
-          ++valnum;
-          roots[has_root].next = calloc(MAX_VALUES, sizeof(*roots));
-          roots[has_root].value = line[10];
-          ++has_root;
-        } else*/
     if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
         line[4] == ' ' &&
         (line[6] == '\n' || line[6] == ' ')) { /* node declaration*/
@@ -318,135 +202,56 @@ node *load_graph(char *filepath) {
   if (nodeidx) {
     return nodes;
   }
+  if (nodes) {
+    for (node *copy = nodes; copy->next; ++copy) {
+      free(copy->next);
+    }
+    free(nodes);
+  }
   return NULL;
 }
 
 /* Sets pending to out */
 void set_graph_pending_to_out(node *root) {
-  static node **val;
-  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!val[0]) ? val[0] = root : 0;
-
-  for (unsigned i = 0, o = 0; !o; ++i) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
-      /* Node we've seen before */
+  while (root->next) {
+    for (TYPE i = 0; root->next[i]; ++i) {
       if (root->out) {
         root->next[i]->pending = 1;
       }
-    } else { /* Node not yet traversed from root before, so traverse */
-      val[vallen] = root->next[i];
-      ++vallen;
-      if (root->out) {
-        root->next[i]->pending = 1;
-      }
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      set_graph_pending_to_out(root->next[i]);
-      (temp) ? is_first = 1 : 0;
     }
-  }
-  if (is_first) {
-    free(val);
-    vallen = 1;
+    root++;
   }
 }
 
-/* Sets out zero  */
+/* Sets out to zero  */
 void set_graph_out_to_zero(node *root) {
-  static node **val;
-  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!val[0]) ? val[0] = root : 0;
-  root->out = 0;
-  for (unsigned i = 0, o = 0; !o; ++i) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
-      /* Node we've seen before */
-    } else { /* Node not yet traversed from root before, so traverse */
-      val[vallen] = root->next[i];
-      ++vallen;
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      set_graph_out_to_zero(root->next[i]);
-      (temp) ? is_first = 1 : 0;
+  while (root->next) {
+    for (TYPE i = 0; root->next[i]; ++i) {
+      root->next[i]->out = 0;
     }
-  }
-  if (is_first) {
-    free(val);
-    vallen = 1;
+    root->out = 0;
+    root++;
   }
 }
 
-/* Sets out to pending*/
+/* Sets out to !pending*/
 void set_graph_out_to_pending(node *root) {
-  static node **val;
-  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!val[0]) ? val[0] = root : 0;
-  root->out = !root->pending;
-  for (unsigned i = 0, o = 0; !o; ++i) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
-      /* Node we've seen before */
-    } else { /* Node not yet traversed from root before, so traverse */
-      val[vallen] = root->next[i];
-      ++vallen;
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      set_graph_out_to_pending(root->next[i]);
-      (temp) ? is_first = 1 : 0;
+  while (root->next) {
+    for (TYPE i = 0; root->next[i]; ++i) {
+      root->next[i]->out = !root->next[i]->pending;
     }
-  }
-  if (is_first) {
-    free(val);
-    vallen = 1;
+    root->out = !root->pending;
+    root++;
   }
 }
 
 /* Sets graph pending to zero*/
 void set_graph_pending_to_zero(node *root) {
-  static node **val;
-  (is_first) ? val = calloc(MAX_VALUES, sizeof(val)) : 0;
-  static VALUE_TYPE vallen = 1;
-  (!val[0]) ? val[0] = root : 0;
-  root->pending = 0;
-  for (unsigned i = 0, o = 0; !o; ++i) {
-    if (root->next[i] == NULL) {
-      o = 1;
-    } else if (is_p_in_arr_of_p(root->next[i], (void *)val)) {
-      /* Node we've seen before */
-    } else { /* Node not yet traversed from root before, so traverse */
-      val[vallen] = root->next[i];
-      ++vallen;
-      int temp = is_first;
-      (temp) ? is_first = 0 : 0;
-      set_graph_pending_to_zero(root->next[i]);
-      (temp) ? is_first = 1 : 0;
-    }
-  }
-  if (is_first) {
-    free(val);
-    vallen = 1;
-  }
-}
-
-void print_definitions_raw(node *root, FILE *output) {
-  while (root->next) {
-    fprintf(output, "node %c %d\n", root->value, root->out);
-    root++;
-  }
-}
-
-void print_raw(node *root, FILE *output) {
   while (root->next) {
     for (TYPE i = 0; root->next[i]; ++i) {
-      fprintf(output, "%c->%c\n", root->value, root->next[i]->value);
+      root->next[i]->pending = 0;
     }
+    root->pending = 0;
     root++;
   }
 }

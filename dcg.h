@@ -15,9 +15,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
 #include "common.h"
-/* #define ALWAYS_PRINT_GRAPH_POINTERS */
-/* #define ALWAYS_PRINT_GRAPH_VALUES */
-
 /* The node itself which can point to several other nodes and hold a value */
 typedef struct node {
   struct node **next; /* Array of pointers to the nodes this one points to*/
@@ -28,15 +25,18 @@ typedef struct node {
 
 /* Function declarations */
 
-/* Prints the graph following a root node, including identifying loops/cycles.
- * It does this by pointer, and thus DOES NOT assume nodes in the graph are
- * unique by value. It * will write to the output (FILE *) parameter.*/
-void print_nodes_by_pointer(node *root, FILE *output);
+/* Prints a graph to output, displaying connections by value.*/
+void print_graph(node *root, FILE *output);
 
-/* Prints the graph following a root node, including identifying loops/cycles.
- * It does this by value, and thus assumes nodes in the graph are unique by
- * value. It * will write to the output (FILE *) parameter.*/
-void print_nodes_by_value(node *root, FILE *output);
+/* Prints a graphs node declarations and initial value definitions to output, by
+ * value. */
+void print_graph_definitions(node *root, FILE *output);
+
+/* print_graph_definitions but mentions the corresponding pointers */
+void print_graph_definitions_with_pointers(node *root, FILE *output);
+
+/* print_graph but with the corresponding pointers */
+void print_graph_with_pointers(node *root, FILE *output);
 
 /* Gets the number of connections derived from a given root node by pointer
  * (thus it DOES NOT assume unique values for each node in the graph). I.e.
@@ -64,17 +64,5 @@ node *load_graph(char *filepath);
 /* Returns 1 if it added a connection to node, 0 otherwise */
 int add_connection_to_node(node *base, node *next);
 
-/* Prints the node definitions of a graph following a root node. It does this by
- * value, and thus assumes nodes in the graph are unique by value. It will write
- * to the output (FILE *) parameter.*/
-void print_nodes_definition_by_value(node *root, FILE *output);
-
-/* Prints the node definitions of a graph following a root node. It does this by
- * pointer, and thus DOES NOT assume nodes in the graph are unique by value. It
- * will write to the output (FILE *) parameter.*/
-void print_nodes_definition_by_pointer(node *root, FILE *output);
-
 /* Iterates the graph a tick */
 void step_graph(node *root);
-void print_raw(node *root, FILE *output);
-void print_definitions_raw(node *root, FILE *output);
