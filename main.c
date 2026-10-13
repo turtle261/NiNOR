@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     node *new = load_graph(argv[1]);
     char *end;
 
-    for (TYPE i = 0; i < (strtol(argv[2], &end, 10)); ++i) {
+    for (TYPE i = 0; i < (strtoull(argv[2], &end, 10)); ++i) {
       // printf("Stepping...\n");
       step_graph(new);
     }
