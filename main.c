@@ -41,9 +41,11 @@ int main(int argc, char *argv[]) {
     }
     free(new);
   } else {
-    printf("Size of:\n");
-    printf("\tNode: %u\n", (unsigned)sizeof(node));
-    printf("MAX VALUE_TYPE = %zu\n", (size_t)(MAX_VALUES));
+
+    fprintf(stderr, "Usage: %s graph(file path) step(positive integer)\n",
+            argv[0]);
+    fprintf(stderr, "Size of Node: %zu bytes\n", sizeof(node));
+    fprintf(stderr, "MAX NUMBER OF EDGES: = %zu\n", (size_t)(MAX_VALUES));
   }
   return 0;
 }
