@@ -182,6 +182,19 @@ unsigned char idx_first_char_after_arrow(char *line) {
   return sum;
 }
 
+TYPE num_nodes(FILE *file) {
+  TYPE num_nodes = 0;
+  char line[MAX_GRAPH_LINE_LEN];
+  while (fgets(line, MAX_GRAPH_LINE_LEN, file)) {
+    if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
+        line[4] == ' ') {
+      num_nodes++;
+    }
+  }
+  rewind(file);
+  return num_nodes;
+}
+
 /* Parses input files in the super simple format... Will try to return NULL on
 wrong files or inputs. Avoid bad inputs.*/
 node *load_graph(char *filepath) {
@@ -190,11 +203,11 @@ node *load_graph(char *filepath) {
     fprintf(stderr, "Failed to open file %s\n", filepath);
     return NULL;
   }
+  node *nodes = calloc(num_nodes(file) + 1, sizeof(*nodes));
   char line[MAX_GRAPH_LINE_LEN];
   VALUE_TYPE values[MAX_VALUES] = {0};
   VALUE_TYPE valnum = 0;
   VALUE_TYPE nodeidx = 0;
-  node *nodes = calloc(MAX_VALUES + 1, sizeof(*nodes));
   while (fgets(line, MAX_GRAPH_LINE_LEN, file)) {
     if (line[0] == 'n' && line[1] == 'o' && line[2] == 'd' && line[3] == 'e' &&
         line[4] == ' ') { /* node declaration*/
@@ -237,6 +250,16 @@ node *load_graph(char *filepath) {
   }
   fclose(file);
   if (nodeidx) {
+    for (VALUE_TYPE i = 0; i < nodeidx; ++i) {
+      TYPE num_out = 0;
+      while (nodes[i].next[num_out]) {
+        ++num_out;
+      }
+      node **temp = realloc(nodes[i].next, (num_out + 1) * sizeof(node *));
+      if (temp) {
+        nodes[i].next = temp;
+      }
+    }
     return nodes;
   }
   if (nodes) {
